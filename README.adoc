@@ -1,0 +1,29 @@
+= rnotro
+Truly ancient code to convert DEC `Runoff` documents to Unix/Linux `troff`.
+I did not write this code, but I did arrange permission (back around 1984) for the release of a
+this DEC Runoff to UNIX troff converter written at the University of Toronto.
+Just leaving it here for posterity.
+
+The following is the original README from the raw distribution.
+
+	RUNOFF to troff converter package.
+	@(#)README	1.2 93/02/01
+
+The program rnotro converts files in the DEC RUNOFF format
+into nroff/troff format. There is a macro package that performs
+some of the simulation; you might want to massage the output
+file to use -ms or -mm later.
+
+Historical note, added by Ian Darwin and Geoff Collyer in 1985:
+We found the source code for this program when cleaning up; it was
+originally written by Leslie Goldsmith, we think, while a graduate student.
+
+We cannot undertake to provide bug fixes or further development,
+but will gladly accept bug fixes and comments.
+
+Ian F. Darwin (NOT THE PROGRAM AUTHOR)
+University of Toronto Computing Services
+utcs!ian
+1985-07-24.
+
+1991-03-03 - New-style copyright notice added to README.

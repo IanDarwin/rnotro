@@ -1,0 +1,413 @@
+.\"	@(#)runoffmacros	1.15 of 3/7/80
+.\"	Macros used by /usr/bin/runoff
+.nh
+.po 3P
+.ll 6.0i
+.lt 6.0i
+.hy0	\"deactivate hyphenation
+.ev1
+.ll 6.0i
+.lt 6.0i
+.hy0	\"deactivate hyphenation
+.ev
+.ev2
+'in 0		\"set default mode for rereading diversion.
+'nf
+.if t .ll 7.5i
+.if n .ll 20i
+.ev
+.ds PA Page
+.\" XX is the point size of the page number
+.ds XX 10
+.\" XY is the font of the page number
+.ds XY R
+.nr -D 0	\" special mode indicator to heading and footings
+.nr .L 1	\"line spacing, default
+.nr C 0
+.nr A 0
+.nr X 0		\"flag for index number 
+.nr cn 1    \" next chapter number register
+.nr ap 1 1
+.nr AP 1
+.af AP A
+.pl 5.8i
+.ta 5P 10P 15P 20P 25P 30P 35P 40P
+.	AP	APPENDIX setup
+.de AP
+.nr TH \\n(HD
+.nr HD 0	\" deactivate header
+.if \\n(nl>0 .sp \\n(.tu
+.sp 3 P
+.ps 13
+.ft B
+.nr AP \\n(ap
+.nr ap +1
+.ce
+APPENDIX \\n(AP
+.ft
+.ps
+.if \\n(TO \{\
+.ce
+.OT
+.sp 3 P\}
+.pn 2		\" reset page number to 2
+.nr C 0		\" deactivate chapter numbering
+.nr X 0		\" deactivate index numbering
+.nr A 1		\" flag appendix page numbering
+.fi		\" reset default mode
+.ad		\" 
+.nr HD \\n(TH
+.nr % 1
+.ds PG \\n(AP - \\n%
+..
+.	CH	\" Chapter start macro
+.de CH
+.nr TH \\n(HD
+.nr HD 0	\" deactivate header
+.if \\n(nl>0 .sp \\n(.tu
+.sp 3 P
+.ps 13
+.ft B
+.nr CN \\n(cn
+.ce
+CHAPTER \\n(CN
+.nr cn +1
+.ft
+.ps
+.if \\n(TO \{\
+.ce
+.OT\}
+.sp 3 P
+.pn 2		\" reset page number to 2
+.nr C 1		\"activate chapter numbering
+.nr A 0		\"deactivate appendix numbering
+.nr X 0		\"deactivate index numbering
+.fi		\" reset default mode
+.ad		\" 
+.nr HD \\n(TH
+.nr % 1
+.ds PG \\n(CN - \\n%
+..
+.	DI	\" diversion macro
+.de DI
+.ev1
+.nr S \\n(.s	\" save current point size,
+.nr V \\n(.v	\" vert size
+.nr F \\n(.f	\" font posn,
+.nr I \\n(.i	\" indent
+.nr L \\n(.l	\" line length
+.nr U \\n(.u	\" fill mode indicator
+..
+.	DX	start index output
+.de DX
+.pn 1
+.nr C 0
+.nr A 0
+.nr X 1
+.if \\n(nl>0 .sp \\n(.tu
+.sp 3P
+.ce
+INDEX
+.sp 3P
+.nr .M \\n(.l/3u*2u
+.nr N \\n(.iu
+.nr LL \\n(.l	\" line length store
+.nr FU \\n(.u	\" store fill mode
+.fi
+..
+.	EF	end footnotes
+.de EF
+.br
+.nr VS \\n(.v	\"save current vert spacing
+.RD
+.di
+.nr FP -\\n(dn	\"new footer position
+.if \\n(FC=1 .nr FP -(\\n(.v-\\n(VS+1P)	\"uncertainty correction
+.ch FO \\n(FPu	\"FP is negative
+.if (\\n(nl+1v)>(\\n(.p+\\n(FP)\
+.ch FO \\n(nlu+1v			\"it didn't fit
+..
+.	EK	at end of keeptogther decide where to place text
+.de EK
+.br
+.di
+.RD
+.if \\n(dn<(\\n(.p-8P) \{\
+.if \\n(.t<\\n(dn .sp \\n(.tu \}
+.ev2
+.KT
+.ev
+..
+.	FB	process leftover footnotes
+.de FB
+.if \\n(FC \{ .di OF	\"overflowed footnote
+.nr LF 1\}		\"flag footnote overflow
+..
+.	FF	start footing
+.de FF
+.nr FD (\\n(FD:\\$1)	\" odd footing flag
+.nr FE (\\n(FE:\\$2)	\" even footing flag
+.if (\\$1*\\$2) .nr AF 1
+.ie \\$1 .di DF
+.el .di VF
+.DI
+..
+.	SF	start footnote
+.de SF
+.DI
+.da FN
+.if \\n+(FC=1 .SP	\"include separator
+..
+.	FO	footer, trap invoked
+.de FO
+.nr LF 0
+.if \\n(FC \{\
+.ev2
+.FN
+.rm FN
+.if "\\n(.z"OF" .di	\"terminate overflow diversion
+.nr FC 0	\"disable FB
+.ev \}
+'sp 3P
+.ev2
+.ie o .DF
+.el .VF
+.br
+.ev
+'bp
+..
+.	IN	pass index entries to indexproc
+.de IN
+.tm \\*(IE	>\\*(PG
+..
+.	LF	get leftover footnote 
+.de LF
+.SF
+'nf
+'in 0
+.OF	\"overflow footnote
+.fi
+.in
+.EF
+..
+.	NS	NO SUBTITLE variants
+.de NS
+.if !\\$2 .nr SE 0
+.if !\\$1 .nr SO 0
+..
+.	RF	reset footing text input mode
+.de RF
+.br
+.di
+.RD
+.if \\n(AF \{\
+.ev 2
+.di VF
+.DF
+.di
+.ev
+.nr AF 0\}
+.nr B 6P+\\n(dnu
+.nr FP -\\n(dn
+.if ((\\n(.p-\\nB)>\\n(nl) \{\
+.ch FB -\\nBu
+.ie (\\n(nlu+1v)<(\\n(.p+\\n(FP)\
+.ch FO \\n(FPu
+.el .ch FO \\n(nlu+1v \}
+..
+.	RS	Reset SUBTITLE
+.de RS
+.br
+.di
+.RD
+.if \\n(AS \{\
+.ev 2
+.di ES
+.OS
+.di
+.ev
+.nr AS 0 \}	\" remove AS flag
+..
+.	SP	separator for footnotes
+.de SP
+'sp
+\l'1.2i'
+.br
+..
+.	ST  	set SUBTITLE
+.de ST
+.nr SO (\\n(SO:\\$1)	\" odd subtitle flag
+.nr SE (\\n(SE:\\$2)	\" even subtitle flag
+.if (\\$1*\\$2) .nr AS 1	\" case when title is for even and odd pages
+.ie \\$1 .di OS
+.el .di ES
+.DI
+..
+.	RI	Set adjustment mode for .RIGHT command
+.de RI
+.br
+.nr AD \\n(.j	\" Save current adjustment mode
+.ad r
+.it 1 RR	\" Invoke reset macro after one line
+..
+.	RR	Reset .RIGHT command
+.de RR
+.br
+.ll
+.ad \\n(AD
+..
+.	PN	Page numbering
+.de PN
+.ie !\\n(.$ .nr PN 1	\" if no arg, turn page numbering on
+.el \{\
+.nr PN \\$1	\" else set as given
+.if \\$1 .pn \\$1 \}
+..
+.	PE	put index entry in proper mode
+.de PE
+.ie (\\w'\\*(IX'+\\n(.i)<\\n(.M \{\
+\\*(IX\\l'(|\\n(.Mu-\\n(.iu).'\}
+.el \{\
+.ll \\n(.Mu
+\\*(IX
+.br
+.ll \\n(LLu
+\\&\\l'(|\\n(.Mu).'\}
+..
+.	UX	unnumbered index - same as PE, without dots and page number
+.de UX
+.ie (\\w'\\*(IX'+\\n(.i)<\\n(.M \{\
+\\*(IX\}
+.el \{\
+.ll \\n(.Mu
+\\*(IX
+.br
+.ll \\n(LLu\}
+..
+.	HD	Header macro
+.de HD
+.if t .tl '\(rn''\(rn'
+.cp	\" Mark cut point for phototypesetter
+.if \\n(HD \{\
+.ev1
+'sp 2P
+.mk
+.ft \\*(XY
+.ps \\*(XX
+.if \\n(PN \{\
+.ie (\\nA+\\nC+\\nX) \{\
+.if \\nA .ds PG \\n(AP - \\n%
+.if \\nC .ds PG \\n(CN - \\n% 
+.if \\nX .ds PG index - \\n%\}
+.el .ds PG \\n%
+.ie \\n%>1 .tl '''\\*(PA \\*(PG'
+.el .ie \\n(FT .tl '''\\*(PA \\*(PG'
+.el .if \\nX .tl '''\\*(PA \\*(PG'\}	\" The index has a page number 1.
+.ft
+.ps
+.rt
+.ev
+.ev 2
+.if o  .if \\n(TO \{\
+.ie \\n%>1 .OT
+.el .if \\n(FT .OT \}
+.if o .if \\n(SO \{\
+.if (\\n(FT:(\\n%>1)) .sp \\n(.Lu
+.ie \\n%>1 .OS
+.el .if \\n(FT .OS  \}
+.if e \{\
+.if \\n(TE .ET
+.if \\n(SE .sp \\n(.Lu
+.if \\n(SE .ES\}
+.ev
+'sp 2*\\n(.Lu \}
+.nr FC 0 1	\"init footnote count
+.nr FP 0-\\nB	\"footer trap position
+.ch FO -\\nBu	\"reset footer trap
+.if \\n(LF .LF	\"footnote overflowed
+.if \\n(FG \{\
+'sp \\n(FGu	\" put out figure space
+.nr FG 0 \}
+..
+.	LT	Set .LITERAL mode
+.de LT
+.br
+.nr FI \\n(.u	\" save setting of fill mode
+.nf
+..
+.	RL	Reset .LITERAL mode
+.de RL
+.br
+.if \\n(FI .fi	\" restore fill mode if set
+..
+.	RD	\" reset diversion
+.de RD
+.ps \\nSu
+.vs \\nVu
+.ft \\nF
+'in \\nIu
+'ll \\nLu
+.ie \\nU 'fi
+.el 'nf
+.ev
+..
+.	RX	Reset index
+.de RX
+.in \\nNu
+.nr X 0
+.if !(\\n(FU) .nf
+.nr FU 1
+.ch FO 18i	\" disable footer
+.sp \\(n.tu
+.ch FO \\n(FP	\" restore footer
+..
+.	TF	trap for figure space
+.de TF
+'sp \\n(.tu
+.ch TF \\n(.pu+20P
+..
+.	TT	Set title for .TITLE variants
+.de TT
+.nr FT (\\n(FT:\\$1)	\" first title flag
+.nr TO (\\n(TO:\\$2)	\" odd title flag
+.nr TE (\\n(TE:\\$3)	\" even title flag
+.if (\\$2*\\$3) .nr AT 1	\" case when title for even & odd pages
+.DI
+.ie \\$2 .di OT
+.el .di ET
+..
+.	RT	Reset title
+.de RT
+.br
+.di
+.RD
+.if \\n(AT \{\
+.ev 2
+.di ET
+.OT
+.di
+.ev
+.nr AT 0 \}	\" reset flag
+..
+.	NO	No operation
+.de NO
+..
+.	NT	NO TITLE variants
+.de NT
+.nr TO \\$1*\\n(TO
+.nr TE \\$2*\\n(TE
+..
+.nr HD 1	\" set headers
+.wh 0 HD
+.PN 1
+.nr TO 0	\" no odd-page titles
+.nr TE 0	\" no even-page titles
+.nr FT 0
+.nr B 6P	\" bottom margin size
+.nr FP 0-\nBu
+.wh 20P FO	\" temporary posn
+.wh -\nBu FB	\" to process overflows
+.ch FO -\nBu	\" conceal FB with FO
+.wh 200P TF	\" temporary position for TF
+.nr FC 0 1
+.ds PG 1

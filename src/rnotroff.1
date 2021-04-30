@@ -1,0 +1,77 @@
+.TH RNOTROFF 1 local
+.ds ]W Unsupported
+.SH NAME
+rnotroff \- convert DEC runoff input to n/troff input
+.SH SYNOPSIS
+.B rnotroff
+.BR \- [ nt8 ]
+[
+.B \-fok
+]
+[
+.BR \-v: var[,var...]
+]
+.SH DESCRIPTION
+.I Runoff
+converts input intended for Digital Equipment Corporation's runoff
+text formatter into input for
+.I nroff
+or
+.IR troff .
+The output on stdout is a file suitable for formatting with
+.I nroff
+or
+.I troff
+depending on whether it was invoked with the
+.BR \-n 
+or
+.BR \-t 
+option.
+Thus
+.I rnotroff
+may be used as part of a pipeline,
+although it is probably simpler to convert your files once and for all using
+.I rnotroff
+to make new files from old.
+The
+.B \-f
+and
+.B \-o
+options are passed directly on to the text formatter.
+The
+.B \-k
+option kills the formatter on detection of any error.
+The
+.B \-v
+option sets runoff ``variants''.
+.SH FILES
+/usr/misc/lib/*runoffmacros, -m*runoff	troff macro packages needed by runoff output
+.SH SEE ALSO
+troff(1)
+.br
+The DEC runoff manuals
+.SH HISTORY
+A predecessor of this program was written at the University of Toronto
+by Leslie Goldsmith for the Document Preparation Service on \s-2PWB/UNIX\s0.
+Ported to Seventh Edition UNIX, and then 4.2BSD, by Geoff Collyer, utcs!geoff.
+Simplified into present form by Ian Darwin, utcs!ian.
+.SH BUGS
+This program does not handle the \s-2RUNOFF\s0 `indexing capability';
+we used to have
+.I runoff ,
+a program that did the same conversion but also ran the
+formatter and the index post-processor.
+It was very complicated; the post-processing was an integral part of
+.IR runoff .
+The use of pipes and processes was, um, quite something to behold.
+We consider it better to convert completely to 
+.I nroff
+and be done with it.
+.PP
+The number of Runoff versions and variations rivals the number
+of UNIX tty drivers; it is not possible for
+.I rnotroff
+to handle them all, so it understands the version in use at our site.
+.PP
+There remain some places where the code could be modernised
+or cleaned up.
